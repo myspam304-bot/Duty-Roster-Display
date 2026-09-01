@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C-1 Duty Board</title>
+<link rel="icon" href="data:,">
+<style>
+  @font-face {
+    font-family: "system-serif";
+    src: local("Georgia"), local("Cambria"), local("Times New Roman");
+  }
+
+  :root{
+    --black:#0b0b0a;
+    --panel:#141412;
+    --plate:#1c1b18;
+    --gray:#8b8d8e;
+    --gray-dim:#54555a;
+    --gold:#c5a032;
+    --gold-bright:#e9c85a;
+    --off-white:#efece2;
+    --rule: rgba(197,160,50,0.35);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    height:100%;
+    margin:0;
+    background:
+      radial-gradient(circle at 50% -10%, #1d1c18 0%, #0b0b0a 55%);
+    color: var(--off-white);
+    font-family: "Trebuchet MS", "Segoe UI", Helvetica, Arial, sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+  }
+
+  .board{
+    width:100%;
+    max-width: 640px;
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.6),
+      0 20px 60px rgba(0,0,0,0.55);
+    position: relative;
+  }
+
+  .board::before{
+    content:"";
+    position:absolute;
+    inset: 10px;
+    border: 1px solid rgba(139,141,142,0.25);
+    pointer-events:none;
+  }
+
+  .board-top{
+    padding: 34px 40px 20px;
+    text-align:center;
+  }
+
+  .crest{
+    display:inline-block;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .crest svg{ width:100%; height:100%; display:block; }
+
+  .unit{
+    font-family: Georgia, "system-serif", "Times New Roman", serif;
+    font-size: 13px;
+    letter-spacing: 0.28em;
+    color: var(--gray);
+    margin: 0 0 6px;
+  }
+
+  h1{
+    font-family: Georgia, "system-serif", "Times New Roman", serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.02em;
+    color: var(--gold-bright);
+    margin: 0;
+  }
+
+  .today{
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--off-white);
+  }
+  .today .weekday{
+    color: var(--gold);
+    font-weight: 600;
+  }
+
+  .divider{
+    height: 1px;
+    margin: 0 40px;
+    background: linear-gradient(90deg, transparent, var(--rule) 20%, var(--rule) 80%, transparent);
+  }
+
+  .roster{
+    padding: 10px 40px 6px;
+  }
+
+  .row{
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(139,141,142,0.16);
+  }
+  .row:last-child{ border-bottom: none; }
+
+  .role{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .role-badge{
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--gold);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family: Georgia, "system-serif", serif;
+    font-weight:700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    color: var(--gold-bright);
+    background: linear-gradient(180deg, rgba(197,160,50,0.12), transparent);
+    position: relative;
+  }
+  .role-badge::before, .role-badge::after{
+    content:"";
+    position:absolute;
+    width:6px; height:6px;
+    border: 1px solid var(--gold);
+  }
+  .role-badge::before{ top:-1px; left:-1px; border-width: 1px 0 0 1px; }
+  .role-badge::after{ bottom:-1px; right:-1px; border-width: 0 1px 1px 0; }
+
+  .role-text{ min-width:0; }
+  .role-title{
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--gray);
+  }
+
+  .name{
+    font-family: Georgia, "system-serif", "Times New Roman", serif;
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--off-white);
+    text-align: right;
+    line-height: 1.25;
+    max-width: 300px;
+  }
+  .name.dim{
+    color: var(--gray-dim);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 17px;
+  }
+
+  .board-bottom{
+    padding: 18px 40px 30px;
+    text-align:center;
+  }
+
+  .refresh{
+    font-size: 11px;
+    color: var(--gray-dim);
+    letter-spacing: 0.05em;
+  }
+
+  .empty-msg{
+    text-align:center;
+    padding: 40px 20px 10px;
+    color: var(--gray);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px){
+    .board-top{ padding: 26px 22px 16px; }
+    .roster{ padding: 6px 22px 6px; }
+    .board-bottom{ padding: 14px 22px 24px; }
+    .divider{ margin: 0 22px; }
+    h1{ font-size: 24px; }
+    .name{ font-size: 18px; max-width: 190px; }
+    .role-badge{ width:44px; height:44px; font-size:12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="board" id="board">
+  <div class="board-top">
+    <div class="crest">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 4 L92 20 V52 C92 76 74 90 50 96 C26 90 8 76 8 52 V20 Z"
+              stroke="#c5a032" stroke-width="2.5"/>
+        <path d="M50 4 L92 20 V52 C92 76 74 90 50 96"
+              stroke="#e9c85a" stroke-width="1" opacity="0.5"/>
+        <text x="50" y="60" text-anchor="middle" font-family="Georgia, serif"
+              font-size="34" fill="#e9c85a" font-weight="700">C1</text>
+      </svg>
+    </div>
+    <p class="unit">UNITED STATES CORPS OF CADETS</p>
+    <h1>C&#8209;1 Duty Board</h1>
+    <div class="today">
+      <span class="weekday" id="weekday"></span>
+      <span id="fulldate"></span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="roster" id="roster"></div>
+
+  <div class="divider"></div>
+
+  <div class="board-bottom">
+    <div class="refresh" id="refresh"></div>
+  </div>
+</div>
+
+<script>
+const ROSTER = [{"date": "2026-08-09", "day": "Sunday", "ccq": "N/A (Corps Returns)", "udo": "N/A", "cdo": "Puerta"}, {"date": "2026-08-10", "day": "Monday", "ccq": "Bell (AM) / Butler (PM)", "udo": "Schaffer", "cdo": "Schetrom"}, {"date": "2026-08-11", "day": "Tuesday", "ccq": "Carreras (AM) / Choi (PM)", "udo": "Ahn", "cdo": "Serowik"}, {"date": "2026-08-12", "day": "Wednesday", "ccq": "Cook (AM) / Cooper (PM)", "udo": "McDonald", "cdo": "Geoffroy-Stewart"}, {"date": "2026-08-13", "day": "Thursday", "ccq": "Baka (AM) / Cramer (PM)", "udo": "Cataldo", "cdo": "Sun"}, {"date": "2026-08-14", "day": "Friday", "ccq": "Kim (AM) / Drucks (PM)", "udo": "Gupta", "cdo": "Krablin"}, {"date": "2026-08-15", "day": "Saturday", "ccq": "Eugene (AM) / Giannotti (PM)", "udo": "Georgiovany", "cdo": "Satpute"}, {"date": "2026-08-16", "day": "Sunday", "ccq": "Gilbert (AM) / Harzbecker (PM)", "udo": "Krablin (Affirmation)", "cdo": "Dieterlen"}, {"date": "2026-08-17", "day": "Monday", "ccq": "Huter", "udo": "Clark", "cdo": "Geoffroy-Stewart"}, {"date": "2026-08-18", "day": "Tuesday", "ccq": "McIlroy", "udo": "McCarthy", "cdo": "Keyster"}, {"date": "2026-08-19", "day": "Wednesday", "ccq": "Namkoong", "udo": "Holtman", "cdo": "Kim"}, {"date": "2026-08-20", "day": "Thursday", "ccq": "Shivappa", "udo": "Cooley", "cdo": "Krablin"}, {"date": "2026-08-21", "day": "Friday", "ccq": "Sims", "udo": "Carver", "cdo": "Holtman"}, {"date": "2026-08-22", "day": "Saturday", "ccq": "Cooper (AM) / Rabaey (PM)", "udo": "Hartman", "cdo": "Schaffer"}, {"date": "2026-08-23", "day": "Sunday", "ccq": "Ryu (AM) / Spooner (PM)", "udo": "Hastings", "cdo": "Ahn"}, {"date": "2026-08-24", "day": "Monday", "ccq": "Taggart", "udo": "Hoag", "cdo": "Monagle"}, {"date": "2026-08-25", "day": "Tuesday", "ccq": "Willard", "udo": "Clark", "cdo": "Price"}, {"date": "2026-08-26", "day": "Wednesday", "ccq": "Borgelt", "udo": "Nienhaus", "cdo": "Puerta"}, {"date": "2026-08-27", "day": "Thursday", "ccq": "Kim", "udo": "Quijije", "cdo": "Satpute"}, {"date": "2026-08-28", "day": "Friday", "ccq": "Baka", "udo": "Schaffer", "cdo": "Schetrom"}, {"date": "2026-08-29", "day": "Saturday", "ccq": "Harzbecker (AM) / Butler (PM)", "udo": "Hertel", "cdo": "Serowik"}, {"date": "2026-08-30", "day": "Sunday", "ccq": "Carreras (AM) / Choi (PM)", "udo": "Ahn", "cdo": "Simpson"}, {"date": "2026-08-31", "day": "Monday", "ccq": "Cook", "udo": "Carver", "cdo": "Smith, Cooper"}, {"date": "2026-09-01", "day": "Tuesday", "ccq": "Drucks", "udo": "Clark", "cdo": "Smith, Samuel"}, {"date": "2026-09-02", "day": "Wednesday", "ccq": "Eugene", "udo": "Hartman", "cdo": "Sun"}, {"date": "2026-09-03", "day": "Thursday", "ccq": "Gianotti", "udo": "Georgiovany", "cdo": "Traylor"}, {"date": "2026-09-04", "day": "Friday", "ccq": "Bell", "udo": "Gupta", "cdo": "York"}, {"date": "2026-09-05", "day": "Saturday", "ccq": "Huter (AM) / Borgelt (PM)", "udo": "Hastings", "cdo": "Willson"}, {"date": "2026-09-06", "day": "Sunday", "ccq": "McIlroy (AM) / Namkoong (PM)", "udo": "Havniear", "cdo": "Geoffroy-Stewart"}, {"date": "2026-09-07", "day": "Monday", "ccq": "Rabaey (AM) / Ryu (PM)", "udo": "Hoag", "cdo": "Dieterlen"}, {"date": "2026-09-08", "day": "Tuesday", "ccq": "Shivappa", "udo": "Holtman", "cdo": "Keyster"}, {"date": "2026-09-09", "day": "Wednesday", "ccq": "Sims", "udo": "Quijije", "cdo": "Kim"}, {"date": "2026-09-10", "day": "Thursday", "ccq": "Taggart", "udo": "Nienhaus", "cdo": "Krablin"}, {"date": "2026-09-11", "day": "Friday", "ccq": "Willard", "udo": "Carver", "cdo": "Monagle"}, {"date": "2026-09-12", "day": "Saturday", "ccq": "Spooner (AM) / Baka (PM)", "udo": "Schaffer", "cdo": "Price"}, {"date": "2026-09-13", "day": "Sunday", "ccq": "Bell (AM) / Butler (PM)", "udo": "Hertel", "cdo": "Puerta"}, {"date": "2026-09-14", "day": "Monday", "ccq": "Carreras", "udo": "Ahn", "cdo": "Satpute"}, {"date": "2026-09-15", "day": "Tuesday", "ccq": "Choi", "udo": "Hartman", "cdo": "Krablin"}, {"date": "2026-09-16", "day": "Wednesday", "ccq": "Cook", "udo": "Clark", "cdo": "Serowik"}, {"date": "2026-09-17", "day": "Thursday", "ccq": "Drucks", "udo": "Cooley", "cdo": "Simpson"}, {"date": "2026-09-18", "day": "Friday", "ccq": "Eugene", "udo": "Georgiovany", "cdo": "Smith, Cooper"}, {"date": "2026-09-19", "day": "Saturday", "ccq": "Gianotti (AM) / Harzbecker (PM)", "udo": "Gupta", "cdo": "Smith, Samuel"}, {"date": "2026-09-20", "day": "Sunday", "ccq": "Huter (AM) / Kim (PM)", "udo": "Hastings", "cdo": "Krablin"}, {"date": "2026-09-21", "day": "Monday", "ccq": "McIlroy", "udo": "Hertel", "cdo": "Traylor"}, {"date": "2026-09-22", "day": "Tuesday", "ccq": "Namkoong", "udo": "Hoag", "cdo": "York"}, {"date": "2026-09-23", "day": "Wednesday", "ccq": "Taggart", "udo": "Holtman", "cdo": "Willson"}, {"date": "2026-09-24", "day": "Thursday", "ccq": "Ryu", "udo": "Cooley", "cdo": "Dieterlen"}, {"date": "2026-09-25", "day": "Friday", "ccq": "Shivappa", "udo": "Nienhaus", "cdo": "Geoffroy-Stewart"}, {"date": "2026-09-26", "day": "Saturday", "ccq": "Sims (AM) / Rabaey (PM)", "udo": "Quijije", "cdo": "Schetrom"}, {"date": "2026-09-27", "day": "Sunday", "ccq": "Willard (AM / Borgelt (PM)", "udo": "Schaffer", "cdo": "Kim"}, {"date": "2026-09-28", "day": "Monday", "ccq": "Baka", "udo": "Hertel", "cdo": "Krablin"}, {"date": "2026-09-29", "day": "Tuesday", "ccq": "Bell", "udo": "Holtman", "cdo": "Monagle"}, {"date": "2026-09-30", "day": "Wednesday", "ccq": "Butler", "udo": "Carver", "cdo": "Price"}, {"date": "2026-10-01", "day": "Thursday", "ccq": "Carreras", "udo": "Nienhaus", "cdo": "Puerta"}, {"date": "2026-10-02", "day": "Friday", "ccq": "Choi", "udo": "Cooley", "cdo": "Satpute"}, {"date": "2026-10-03", "day": "Saturday", "ccq": "Cook (AM) / Drucks (PM)", "udo": "Georgiovany", "cdo": "Serowik"}, {"date": "2026-10-04", "day": "Sunday", "ccq": "Eugene (AM) / Giannotti (PM)", "udo": "Gupta", "cdo": "Keyster"}, {"date": "2026-10-05", "day": "Monday", "ccq": "Harzbecker", "udo": "Hastings", "cdo": "Simpson"}, {"date": "2026-10-06", "day": "Tuesday", "ccq": "Huter", "udo": "Ahn", "cdo": "Smith, Cooper"}, {"date": "2026-10-07", "day": "Wednesday", "ccq": "Kim", "udo": "Hartman", "cdo": "Smith, Samuel"}, {"date": "2026-10-08", "day": "Thursday", "ccq": "McIlroy", "udo": "Ahn", "cdo": "Sun"}, {"date": "2026-10-09", "day": "Friday", "ccq": "Namkoong", "udo": "Knapp", "cdo": "Traylor"}, {"date": "2026-10-10", "day": "Saturday", "ccq": "Rabaey (AM) / Ryu (PM)", "udo": "Neinhaus", "cdo": "York"}, {"date": "2026-10-11", "day": "Sunday", "ccq": "Shivappa (AM) / Sims (PM)", "udo": "Quijije", "cdo": "Willson"}, {"date": "2026-10-12", "day": "Monday", "ccq": "Taggart (AM) / Willard (PM)", "udo": "Schafer", "cdo": "Dieterlen"}, {"date": "2026-10-13", "day": "Tuesday", "ccq": "Borgelt", "udo": "Hertel", "cdo": "Geoffroy-Stewart"}, {"date": "2026-10-14", "day": "Wednesday", "ccq": "Baka", "udo": "Ahn", "cdo": "Keyster"}, {"date": "2026-10-15", "day": "Thursday", "ccq": "Bell", "udo": "Carver", "cdo": "Kim"}, {"date": "2026-10-16", "day": "Friday", "ccq": "Butler", "udo": "Clark", "cdo": "Krablin"}, {"date": "2026-10-17", "day": "Saturday", "ccq": "Carreras (AM) / Choi (PM)", "udo": "Georgiovany", "cdo": "Monagle"}, {"date": "2026-10-18", "day": "Sunday", "ccq": "Cook (AM) / Drucks (PM)", "udo": "Cooley", "cdo": "Price"}, {"date": "2026-10-19", "day": "Monday", "ccq": "Eugene", "udo": "Gupta", "cdo": "Puerta"}, {"date": "2026-10-20", "day": "Tuesday", "ccq": "Gianotti", "udo": "Schaffer", "cdo": "Satpute"}, {"date": "2026-10-21", "day": "Wednesday", "ccq": "Harzbecker", "udo": "Hastings", "cdo": "Schetrom"}, {"date": "2026-10-22", "day": "Thursday", "ccq": "Huter", "udo": "Hoag", "cdo": "Serowik"}, {"date": "2026-10-23", "day": "Friday", "ccq": "Kim", "udo": "Havniear", "cdo": "Simpson"}, {"date": "2026-10-24", "day": "Saturday", "ccq": "McIlroy (AM) / Namkoong (PM)", "udo": "Holtman", "cdo": "Smith, Cooper"}, {"date": "2026-10-25", "day": "Sunday", "ccq": "Rabaey (AM) / Ryu (PM)", "udo": "Knapp", "cdo": "Smith, Samuel"}, {"date": "2026-10-26", "day": "Monday", "ccq": "Shivappa", "udo": "Nienhaus", "cdo": "Sun"}, {"date": "2026-10-27", "day": "Tuesday", "ccq": "Sims", "udo": "Quijije", "cdo": "Traylor"}, {"date": "2026-10-28", "day": "Wednesday", "ccq": "Taggart", "udo": "Schaffer", "cdo": "York"}, {"date": "2026-10-29", "day": "Thursday", "ccq": "Willard", "udo": "Hertel", "cdo": "Dieterlen"}, {"date": "2026-10-30", "day": "Friday", "ccq": "Baka", "udo": "Nienhaus", "cdo": "Willson"}, {"date": "2026-10-31", "day": "Saturday", "ccq": "Bell (AM) / Butler (PM)", "udo": "Georgiovany", "cdo": "Geoffroy-Stewart"}, {"date": "2026-11-01", "day": "Sunday", "ccq": "Carreras (AM) / Choi (PM)", "udo": "Clark", "cdo": "Keyster"}, {"date": "2026-11-02", "day": "Monday", "ccq": "Choi", "udo": "Gupta", "cdo": "Kim"}, {"date": "2026-11-03", "day": "Tuesday", "ccq": "Cook", "udo": "Carver", "cdo": "Krablin"}, {"date": "2026-11-04", "day": "Wednesday", "ccq": "Drucks", "udo": "Cooley", "cdo": "Monagle"}, {"date": "2026-11-05", "day": "Thursday", "ccq": "Eugene", "udo": "Hastings", "cdo": "Price"}, {"date": "2026-11-06", "day": "Friday", "ccq": "Gianotti", "udo": "Ahn", "cdo": "Puerta"}, {"date": "2026-11-07", "day": "Saturday", "ccq": "Harzbecker (AM) / Huter (PM)", "udo": "Havniear", "cdo": "Satpute"}, {"date": "2026-11-08", "day": "Sunday", "ccq": "Kim (AM) / McIlroy (PM)", "udo": "Hoag", "cdo": "Schetrom"}, {"date": "2026-11-09", "day": "Monday", "ccq": "Namkoong", "udo": "Holtman", "cdo": "Serowik"}, {"date": "2026-11-10", "day": "Tuesday", "ccq": "Rabaey", "udo": "Knapp", "cdo": "Simpson"}, {"date": "2026-11-11", "day": "Wednesday", "ccq": "Ryu (AM) / Shivappa (PM) *shifts not confirmed", "udo": "Nienhaus", "cdo": "Smith, Cooper"}, {"date": "2026-11-12", "day": "Thursday", "ccq": "Sims", "udo": "Quijije", "cdo": "Smith, Samuel"}, {"date": "2026-11-13", "day": "Friday", "ccq": "Taggart", "udo": "Schaffer", "cdo": "Sun"}, {"date": "2026-11-14", "day": "Saturday", "ccq": "Willard (AM) / Baka (PM)", "udo": "Hertel", "cdo": "Traylor"}, {"date": "2026-11-15", "day": "Sunday", "ccq": "Bell (AM) / Butler (PM)", "udo": "Holtman", "cdo": "York"}, {"date": "2026-11-16", "day": "Monday", "ccq": "Carreras", "udo": "Carver", "cdo": "Willson"}, {"date": "2026-11-17", "day": "Tuesday", "ccq": "Choi", "udo": "Clark", "cdo": "Dieterlen"}, {"date": "2026-11-18", "day": "Wednesday", "ccq": "Cook", "udo": "Cooley", "cdo": "Geoffroy-Stewart"}, {"date": "2026-11-19", "day": "Thursday", "ccq": "Drucks", "udo": "Gupta", "cdo": "Keyster"}, {"date": "2026-11-20", "day": "Friday", "ccq": "Eugene", "udo": "Quijije", "cdo": "Kim"}, {"date": "2026-11-21", "day": "Saturday", "ccq": "Gianotti (AM) / Harzbecker (PM)", "udo": "Havniear", "cdo": "Krablin"}, {"date": "2026-11-22", "day": "Sunday", "ccq": "Huter (AM) / Kim (PM)", "udo": "Hoag", "cdo": "Monagle"}, {"date": "2026-11-23", "day": "Monday", "ccq": "Kim", "udo": "Cloninger", "cdo": "Price"}, {"date": "2026-11-24", "day": "Tuesday", "ccq": "McIlroy", "udo": "Georgiovany", "cdo": "Puerta"}, {"date": "2026-11-25", "day": "Wednesday", "ccq": "--Leave--", "udo": "--Leave--", "cdo": "--Leave--"}, {"date": "2026-11-26", "day": "Thursday", "ccq": "--Leave--", "udo": "--Leave--", "cdo": "--Leave--"}, {"date": "2026-11-27", "day": "Friday", "ccq": "--Leave--", "udo": "--Leave--", "cdo": "--Leave--"}, {"date": "2026-11-28", "day": "Saturday", "ccq": "--Leave--", "udo": "--Leave--", "cdo": "--Leave--"}, {"date": "2026-11-29", "day": "Sunday", "ccq": "--Leave--", "udo": "--Leave--", "cdo": "--Leave--"}, {"date": "2026-11-30", "day": "Monday", "ccq": "Namkoong (CCQ duty starts following Recall Formation)", "udo": "Hastings", "cdo": "Satpute"}, {"date": "2026-12-01", "day": "Tuesday", "ccq": "Rabaey", "udo": "Hoag", "cdo": "Schetrom"}, {"date": "2026-12-02", "day": "Wednesday", "ccq": "Ryu", "udo": "Schaffer", "cdo": "Cow (Branch Night)"}, {"date": "2026-12-03", "day": "Thursday", "ccq": "Shivappa", "udo": "Nienhaus", "cdo": "Serowik"}, {"date": "2026-12-04", "day": "Friday", "ccq": "Sims", "udo": "Quijije", "cdo": "Simpson"}, {"date": "2026-12-05", "day": "Saturday", "ccq": "Taggart (AM) / Willard (PM)", "udo": "Ahn", "cdo": "Smith, Samuel"}, {"date": "2026-12-06", "day": "Sunday", "ccq": "Baka (AM) / Bell (PM)", "udo": "Knapp", "cdo": "Smith, Cooper"}, {"date": "2026-12-07", "day": "Monday", "ccq": "Butler", "udo": "Carver", "cdo": "Sun"}, {"date": "2026-12-08", "day": "Tuesday", "ccq": "Carreras", "udo": "Clark", "cdo": "Traylor"}, {"date": "2026-12-09", "day": "Wednesday", "ccq": "Choi", "udo": "Cloninger", "cdo": "York"}, {"date": "2026-12-10", "day": "Thursday", "ccq": "Cook", "udo": "Cooley", "cdo": "Willson"}, {"date": "2026-12-11", "day": "Friday", "ccq": "--Army v. Navy--", "udo": "--Army v. Navy--", "cdo": "--Army v. Navy--"}, {"date": "2026-12-12", "day": "Saturday", "ccq": "--Army v. Navy--", "udo": "--Army v. Navy--", "cdo": "--Army v. Navy--"}, {"date": "2026-12-13", "day": "Sunday", "ccq": "--Army v. Navy--", "udo": "Holtman", "cdo": "Dieterlen"}, {"date": "2026-12-14", "day": "Monday", "ccq": "--No CCQ--", "udo": "Gupta", "cdo": "Geoffroy-Stewart"}, {"date": "2026-12-15", "day": "Tuesday", "ccq": "--No CCQ--", "udo": "Holtman", "cdo": "Keyster"}, {"date": "2026-12-16", "day": "Wednesday", "ccq": "--No CCQ--", "udo": "Hastings", "cdo": "Kim"}, {"date": "2026-12-17", "day": "Thursday", "ccq": "--No CCQ--", "udo": "Cloninger", "cdo": "Krablin"}, {"date": "2026-12-18", "day": "Friday", "ccq": "--No CCQ--", "udo": "Hoag", "cdo": "Monagle"}, {"date": "2026-12-19", "day": "Saturday", "ccq": "--No CCQ--", "udo": "Georgiovany", "cdo": "Price"}, {"date": "2026-12-20", "day": "Sunday", "ccq": null, "udo": null, "cdo": null}, {"date": "2026-12-21", "day": "Monday", "ccq": "* TEE Week Duties . . . MTF", "udo": "* TEE Week Duties . . . MTF", "cdo": "* TEE Week Duties . . . MTF"}, {"date": "2026-12-22", "day": "Tuesday", "ccq": null, "udo": null, "cdo": null}, {"date": "2026-12-23", "day": "Wednesday", "ccq": null, "udo": null, "cdo": null}, {"date": "2026-12-24", "day": "Thursday", "ccq": null, "udo": null, "cdo": null}, {"date": "2026-12-25", "day": "Friday", "ccq": null, "udo": null, "cdo": null}];
+
+const ROLES = [
+  { key: "ccq", label: "CCQ", title: "CHARGE OF QUARTERS" },
+  { key: "cdo", label: "CDO", title: "CADET DUTY OFFICER" },
+  { key: "udo", label: "UDO", title: "UNIFORM / DUTY OFFICER" }
+];
+
+function pad(n){ return n < 10 ? "0" + n : "" + n; }
+
+function todayKey(){
+  const d = new Date();
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+}
+
+function cleanValue(v){
+  if (v === null || v === undefined) return null;
+  const s = String(v).trim();
+  return s.length ? s : null;
+}
+
+function render(){
+  const key = todayKey();
+  const now = new Date();
+
+  document.getElementById("weekday").textContent =
+    now.toLocaleDateString("en-US", { weekday: "long" }) + " \u2014 ";
+  document.getElementById("fulldate").textContent =
+    now.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  document.getElementById("refresh").textContent =
+    "C-1 Duty Roster AY27-1  \u2022  loaded " +
+    now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+  const entry = ROSTER.find(e => e.date === key);
+  const rosterEl = document.getElementById("roster");
+  rosterEl.innerHTML = "";
+
+  if (!entry) {
+    rosterEl.innerHTML =
+      '<div class="empty-msg">No roster entry on file for today.<br>' +
+      'This board covers Aug 9 &ndash; Dec 25, 2026.</div>';
+    return;
+  }
+
+  ROLES.forEach(role => {
+    const raw = cleanValue(entry[role.key]);
+    const row = document.createElement("div");
+    row.className = "row";
+
+    const nameClass = raw ? "name" : "name dim";
+    const nameText = raw ? raw : "Not assigned";
+
+    row.innerHTML =
+      '<div class="role">' +
+        '<div class="role-badge">' + role.label + '</div>' +
+        '<div class="role-text"><div class="role-title">' + role.title + '</div></div>' +
+      '</div>' +
+      '<div class="' + nameClass + '">' + nameText + '</div>';
+
+    rosterEl.appendChild(row);
+  });
+}
+
+render();
+// Re-check at the top of every minute in case the app is left open overnight
+setInterval(render, 60 * 1000);
+</script>
+
+</body>
+</html>
